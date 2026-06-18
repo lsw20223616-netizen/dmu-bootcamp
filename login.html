@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - DMU 반도체부트캠프</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-tabs {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: #f5f5f7;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-tab.active {
+            background: var(--text-main);
+            color: #fff;
+            font-weight: 600;
+        }
+        .breadcrumb {
+            text-align: right;
+            padding: 16px 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            background: #fff;
+        }
+        .login-content {
+            padding: 60px 24px 140px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .login-content h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--text-main);
+        }
+        .login-divider {
+            width: 100%;
+            height: 1px;
+            background-color: var(--text-main);
+            margin-bottom: 60px;
+            opacity: 0.2;
+        }
+        .login-subtitle {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .login-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+        }
+        .login-form {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .login-input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 980px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            background: #fff;
+        }
+        .login-input:focus {
+            border-color: var(--text-main);
+        }
+        .login-submit {
+            padding: 0 40px;
+            background: var(--text-main);
+            color: #fff;
+            border: none;
+            border-radius: 980px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-submit:hover {
+            background: #424245;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-dmu">DMU</span><span class="logo-text">반도체부트캠프</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="about.html">사업단 소개</a></li>
+                    <li><a href="course.html">교육과정안내/신청</a></li>
+                    <li><a href="facility.html">교육시설장비</a></li>
+                    <li><a href="community.html">커뮤니티</a></li>
+                    <li><a href="recruit.html">채용정보</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user-circle"></i> 로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <main style="background: #fff;">
+        <div class="login-tabs">
+            <div class="login-tab active" id="tabLogin">로그인</div>
+            <div class="login-tab" id="tabSignup">회원가입</div>
+        </div>
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> &gt; <span id="bread1">로그인</span> &gt; <span id="bread2">로그인</span>
+        </div>
+        
+        <section class="login-content">
+            <h1 id="pageTitle">로그인</h1>
+            <div class="login-divider"></div>
+            
+            <div class="login-subtitle" id="pageSubTitle">LOGIN</div>
+            <div class="login-desc" id="pageDesc">WELCOME BACK</div>
+            
+            <form class="login-form" id="loginForm">
+                <input type="text" class="login-input" id="loginId" placeholder="아이디" required>
+                <input type="password" class="login-input" id="loginPw" placeholder="패스워드" required>
+                <button type="submit" class="login-submit">로그인</button>
+            </form>
+            
+            <form class="login-form" id="signupForm" style="display: none;">
+                <input type="text" class="login-input" id="signupId" placeholder="원하는 아이디" required>
+                <input type="password" class="login-input" id="signupPw" placeholder="비밀번호 지정" required>
+                <button type="submit" class="login-submit">가입완료</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">DMU 반도체부트캠프</div>
+            <div class="footer-info">
+                <p>서울특별시 구로구 경인로 445 동양미래대학교</p>
+                <p>Copyright &copy; 2026 DONGYANG MIRAE UNIVERSITY. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 이미 로그인 되어있는지 확인
+        const currentUser = localStorage.getItem('dmu_user');
+        if(currentUser) {
+            alert(currentUser + '님, 이미 로그인되어 있습니다.');
+            window.location.href = 'index.html';
+        }
+
+        const tabLogin = document.getElementById('tabLogin');
+        const tabSignup = document.getElementById('tabSignup');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        
+        const pageTitle = document.getElementById('pageTitle');
+        const pageSubTitle = document.getElementById('pageSubTitle');
+        const pageDesc = document.getElementById('pageDesc');
+        const bread1 = document.getElementById('bread1');
+        const bread2 = document.getElementById('bread2');
+
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabSignup.classList.remove('active');
+            loginForm.style.display = 'flex';
+            signupForm.style.display = 'none';
+            pageTitle.innerText = '로그인';
+            pageSubTitle.innerText = 'LOGIN';
+            pageDesc.innerText = 'WELCOME BACK';
+            bread1.innerText = '로그인';
+            bread2.innerText = '로그인';
+        });
+
+        tabSignup.addEventListener('click', () => {
+            tabSignup.classList.add('active');
+            tabLogin.classList.remove('active');
+            signupForm.style.display = 'flex';
+            loginForm.style.display = 'none';
+            pageTitle.innerText = '회원가입';
+            pageSubTitle.innerText = 'SIGN UP';
+            pageDesc.innerText = 'JOIN US TODAY';
+            bread1.innerText = '회원가입';
+            bread2.innerText = '회원가입';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('loginId').value;
+            const pw = document.getElementById('loginPw').value;
+            const storedPw = localStorage.getItem('dmu_user_' + id);
+            
+            if(!storedPw) {
+                alert('가입되지 않은 아이디입니다.');
+            } else if(storedPw !== pw) {
+                alert('비밀번호가 일치하지 않습니다.');
+            } else {
+                localStorage.setItem('dmu_user', id);
+                alert('환영합니다, ' + id + '님!');
+                window.location.href = 'index.html';
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('signupId').value;
+            const pw = document.getElementById('signupPw').value;
+            
+            if(localStorage.getItem('dmu_user_' + id)) {
+                alert('이미 사용중인 아이디입니다. 다른 아이디를 입력해주세요.');
+            } else {
+                localStorage.setItem('dmu_user_' + id, pw);
+                alert('🎉 회원가입이 완료되었습니다! 생성하신 아이디로 로그인해 주세요.');
+                tabLogin.click();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

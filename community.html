@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티 - DMU 반도체부트캠프</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .subpage-header { padding: 100px 0; text-align: center; background: #f5f5f7; border-bottom: 1px solid var(--border-color); }
+        .subpage-header h1 { font-size: 40px; margin-bottom: 20px; color: var(--text-main); letter-spacing: -1px; }
+        .subpage-content { min-height: 60vh; padding: 80px 24px; background: #fff; }
+
+        /* Board Layout */
+        .board-container { max-width: 1000px; margin: 0 auto; }
+        .board-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .board-title { font-size: 24px; font-weight: 700; color: var(--text-main); }
+        .btn-write { background: var(--text-main); color: #fff; border: none; padding: 12px 28px; border-radius: 980px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
+        .btn-write:hover { background: #424245; }
+
+        .board-table { width: 100%; border-collapse: collapse; text-align: center; }
+        .board-table th { background: #f5f5f7; font-weight: 600; color: var(--text-muted); padding: 16px; border-bottom: 2px solid var(--border-color); border-top: 2px solid var(--text-main); }
+        .board-table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 15px; color: var(--text-main); }
+        .board-table tr:hover td { background: #fbfbfb; cursor: pointer; }
+        .title-col { text-align: left !important; font-weight: 600; }
+        .title-col:hover .title-text { text-decoration: underline; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal { background: #fff; width: 600px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); max-width: 90%; }
+        .view-modal { width: 700px; max-height: 90vh; overflow-y: auto; padding: 40px 30px; }
+        .modal-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--text-main); border-bottom: 2px solid var(--text-main); padding-bottom: 16px; }
+        
+        .modal-input { width: 100%; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; outline: none; font-size: 15px; background: #f5f5f7; }
+        .modal-textarea { width: 100%; padding: 16px; height: 200px; border: 1px solid var(--border-color); border-radius: 12px; resize: none; margin-bottom: 24px; outline: none; font-size: 15px; background: #f5f5f7; font-family: inherit; }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .btn-cancel { background: #e5e5ea; color: var(--text-main); border: none; padding: 14px 24px; border-radius: 980px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-submit { background: var(--text-main); color: #fff; border: none; padding: 14px 32px; border-radius: 980px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+
+        .view-meta { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; display: flex; gap: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;}
+        .view-content { min-height: 120px; white-space: pre-wrap; font-size: 16px; line-height: 1.8; margin-bottom: 30px; padding: 0 8px; color: var(--text-main); }
+        
+        /* Like and Comments */
+        .btn-like-post { background: #fff; color: var(--text-main); border: 2px solid var(--border-color); padding: 12px 30px; border-radius: 980px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .btn-like-post:hover { border-color: var(--text-main); background: #f5f5f7; }
+
+        .comments-section { background: #fbfbfb; border-radius: 16px; padding: 24px; border: 1px solid var(--border-color); }
+        .comments-count { font-weight: 700; margin-bottom: 16px; font-size: 15px; }
+
+        .comment-input-area { display: flex; gap: 10px; margin-bottom: 24px; }
+        .comment-input { flex: 1; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-size: 14px; }
+        .comment-input:focus { border-color: var(--text-main); }
+        .btn-comment-submit { background: var(--text-main); color: #fff; padding: 0 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+
+        .comment-item { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e5e5ea; }
+        .comment-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .comment-author { font-weight: 700; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;}
+        .comment-text { font-size: 14px; color: var(--text-main); margin-bottom: 8px; line-height: 1.5; }
+        .comment-date { font-size: 12px; color: var(--text-muted); }
+        
+        .best-badge { background: #000; color: white; padding: 3px 8px; border-radius: 980px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+        .btn-like-comment { background: none; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; transition: 0.3s; font-weight: 600; height: fit-content; }
+        .btn-like-comment:hover { color: var(--text-main); border-color: var(--text-main); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-dmu">DMU</span><span class="logo-text">반도체부트캠프</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="about.html">사업단 소개</a></li>
+                    <li><a href="course.html">교육과정안내/신청</a></li>
+                    <li><a href="facility.html">교육시설장비</a></li>
+                    <li><a href="community.html">커뮤니티</a></li>
+                    <li><a href="recruit.html">채용정보</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user-circle"></i> 로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="subpage-header">
+            <div class="container">
+                <h1>자유게시판 (커뮤니티)</h1>
+                <p style="color: var(--text-muted);">부트캠프와 관련된 다양한 이야기, 질문 등을 자유롭게 나누는 공간입니다.</p>
+            </div>
+        </section>
+        
+        <section class="subpage-content">
+            <div class="board-container">
+                <div class="board-header">
+                    <div class="board-title">전체 글 목록</div>
+                    <button class="btn-write" id="btnWrite"><i class="fas fa-pen"></i> 새 글 쓰기</button>
+                </div>
+                
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">번호</th>
+                            <th class="title-col" style="width: 48%;">제목</th>
+                            <th style="width: 12%;">작성자</th>
+                            <th style="width: 8%;">조회</th>
+                            <th style="width: 8%;">추천</th>
+                            <th style="width: 16%;">작성일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="boardTbody">
+                        <!-- Javascript will populate posts here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Write Post Modal -->
+    <div class="modal-overlay" id="modalWrite">
+        <div class="modal">
+            <div class="modal-title">게시글 작성하기</div>
+            <form id="formWrite">
+                <input type="text" class="modal-input" id="writeTitle" placeholder="제목을 입력하세요." required>
+                <textarea class="modal-textarea" id="writeContent" placeholder="내용을 작성해주세요. (질문, 의견 등)" required></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCancelWrite">취소</button>
+                    <button type="submit" class="btn-submit">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Post Modal -->
+    <div class="modal-overlay" id="modalView">
+        <div class="modal view-modal">
+            <div class="modal-title" id="viewTitle">게시글 제목 영역</div>
+            <div class="view-meta" id="viewMeta">
+                <!-- Javascript will inject Author, Date, Views -->
+            </div>
+            <div class="view-content" id="viewContent">내용 영역</div>
+            
+            <!-- Like Post Box -->
+            <div style="text-align: center; margin-bottom: 40px;">
+                <button class="btn-like-post" id="btnLikePost"><i class="fas fa-thumbs-up"></i> 추천 <span id="postLikeCount">0</span></button>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <div class="comments-count">댓글 <span id="commentsCountTxt">0</span>개</div>
+                <div class="comment-input-area">
+                    <input type="text" id="commentText" placeholder="댓글을 남겨보세요..." class="comment-input">
+                    <button class="btn-comment-submit" id="btnSubmitComment">등록</button>
+                </div>
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments injected by JS -->
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button type="button" class="btn-cancel" id="btnCloseView">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">DMU 반도체부트캠프</div>
+            <div class="footer-info">
+                <p>서울특별시 구로구 경인로 445 동양미래대학교</p>
+                <p>Copyright &copy; 2026 DONGYANG MIRAE UNIVERSITY. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardTbody = document.getElementById('boardTbody');
+            const modalWrite = document.getElementById('modalWrite');
+            const modalView = document.getElementById('modalView');
+            const btnWrite = document.getElementById('btnWrite');
+            
+            // Database Initialization & Migration
+            let posts = JSON.parse(localStorage.getItem('dmu_posts')) || [];
+            posts = posts.map(p => ({
+                ...p,
+                id: p.id || Math.random().toString(36).substr(2, 9),
+                views: p.views || 0,
+                likes: p.likes || 0,
+                comments: p.comments || []
+            }));
+            savePosts();
+
+            let currentPostId = null;
+
+            function savePosts() {
+                localStorage.setItem('dmu_posts', JSON.stringify(posts));
+            }
+
+            function getPost(id) {
+                return posts.find(p => p.id === id);
+            }
+
+            // Render Entire Board
+            function renderBoard() {
+                boardTbody.innerHTML = '';
+                if(posts.length === 0) {
+                    boardTbody.innerHTML = '<tr><td colspan="6" style="padding: 60px; color: #86868b; text-align: center;">등록된 게시글이 없습니다. 첫 글의 주인공이 되어보세요!</td></tr>';
+                    return;
+                }
+                
+                const reversed = [...posts].reverse();
+                reversed.forEach((post, index) => {
+                    const tr = document.createElement('tr');
+                    const commentIndicator = post.comments.length > 0 ? `<span style="color:#ff3b30; font-weight:700; margin-left:8px; font-size:13px;">[${post.comments.length}]</span>` : '';
+                    
+                    tr.innerHTML = `
+                        <td>${posts.length - index}</td>
+                        <td class="title-col"><span class="title-text">${post.title}</span>${commentIndicator}</td>
+                        <td>${post.author}</td>
+                        <td>${post.views}</td>
+                        <td><span style="color:var(--text-main); font-weight:600;">${post.likes}</span></td>
+                        <td>${post.date}</td>
+                    `;
+                    
+                    tr.addEventListener('click', () => {
+                        // Increase Views
+                        post.views += 1;
+                        savePosts();
+                        renderBoard(); // refresh underlying numbers instantly
+
+                        currentPostId = post.id;
+                        renderModalView(post);
+                        modalView.style.display = 'flex';
+                    });
+                    boardTbody.appendChild(tr);
+                });
+            }
+
+            // Render Modal content for a specific post
+            function renderModalView(post) {
+                document.getElementById('viewTitle').innerText = post.title;
+                document.getElementById('viewMeta').innerHTML = `
+                    <span><i class="fas fa-user"></i> ${post.author}</span>
+                    <span><i class="fas fa-calendar"></i> ${post.date}</span>
+                    <span><i class="fas fa-eye"></i> ${post.views}</span>
+                `;
+                document.getElementById('viewContent').innerText = post.content;
+                document.getElementById('postLikeCount').innerText = post.likes;
+                renderComments(post);
+            }
+
+            // Render Comments inside Modal
+            function renderComments(post) {
+                const list = document.getElementById('commentsList');
+                document.getElementById('commentsCountTxt').innerText = post.comments.length;
+                list.innerHTML = '';
+                
+                // Track highest likes for Best comment logic
+                let highestLikes = 0;
+                post.comments.forEach(c => { if(c.likes > highestLikes) highestLikes = c.likes; });
+
+                post.comments.forEach(c => {
+                    const isBest = c.likes > 0 && c.likes === highestLikes; // Only gets Best if liked at least once
+                    
+                    const div = document.createElement('div');
+                    div.className = 'comment-item';
+                    
+                    const leftDiv = document.createElement('div');
+                    leftDiv.innerHTML = `
+                        <div class="comment-author">
+                            ${c.author}
+                            ${isBest ? '<span class="best-badge"><i class="fas fa-fire"></i> BEST</span>' : ''}
+                        </div>
+                        <div class="comment-text">${c.text}</div>
+                        <div class="comment-date">${c.date}</div>
+                    `;
+                    
+                    const rightDiv = document.createElement('div');
+                    const btnLike = document.createElement('button');
+                    btnLike.className = 'btn-like-comment';
+                    btnLike.innerHTML = `<i class="fas fa-thumbs-up"></i> 추천 ${c.likes}`;
+                    
+                    // Increment Comment Likes
+                    btnLike.addEventListener('click', () => {
+                        c.likes += 1;
+                        savePosts();
+                        renderComments(post); // Refresh comments immediately
+                    });
+
+                    rightDiv.appendChild(btnLike);
+                    div.appendChild(leftDiv);
+                    div.appendChild(rightDiv);
+                    list.appendChild(div);
+                });
+            }
+
+            // Like main Post Action
+            document.getElementById('btnLikePost').addEventListener('click', () => {
+                if(!currentPostId) return;
+                const p = getPost(currentPostId);
+                if(p) {
+                    p.likes += 1;
+                    savePosts();
+                    document.getElementById('postLikeCount').innerText = p.likes;
+                    renderBoard(); // refresh underlying list
+                }
+            });
+
+            // Submit Comment Action
+            document.getElementById('btnSubmitComment').addEventListener('click', () => {
+                if(!currentPostId) return;
+                const author = localStorage.getItem('dmu_user');
+                if(!author) {
+                    alert('로그인 후 댓글을 남길 수 있습니다.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const input = document.getElementById('commentText');
+                const text = input.value.trim();
+                if(!text) return;
+                
+                const p = getPost(currentPostId);
+                if(p) {
+                    const today = new Date();
+                    const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0') + " " + String(today.getHours()).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0');
+                    
+                    p.comments.push({
+                        id: Math.random().toString(36).substr(2, 9),
+                        author: author,
+                        text: text,
+                        date: dateStr,
+                        likes: 0
+                    });
+                    savePosts();
+                    input.value = '';
+                    renderComments(p);
+                    renderBoard();
+                }
+            });
+
+            // New Post Button
+            btnWrite.addEventListener('click', () => {
+                const currentUser = localStorage.getItem('dmu_user');
+                if(!currentUser) {
+                    alert('로그인 후 새 글을 작성할 수 있습니다.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                modalWrite.style.display = 'flex';
+            });
+
+            // Submit New Post
+            document.getElementById('formWrite').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('writeTitle').value;
+                const content = document.getElementById('writeContent').value;
+                const author = localStorage.getItem('dmu_user');
+                const today = new Date();
+                const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+                posts.push({ id: Math.random().toString(36).substr(2, 9), title, content, author, date: dateStr, views: 0, likes: 0, comments: [] });
+                savePosts();
+                
+                document.getElementById('writeTitle').value = '';
+                document.getElementById('writeContent').value = '';
+                modalWrite.style.display = 'none';
+                renderBoard();
+            });
+
+            // Close Modals
+            document.getElementById('btnCancelWrite').addEventListener('click', () => modalWrite.style.display = 'none');
+            document.getElementById('btnCloseView').addEventListener('click', () => modalView.style.display = 'none');
+
+            // Initial Render
+            renderBoard();
+        });
+    </script>
+</body>
+</html>

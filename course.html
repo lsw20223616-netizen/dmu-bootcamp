@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육과정안내/신청 - DMU 반도체부트캠프</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-tabs {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+        }
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: #f5f5f7;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-tab.active {
+            background: var(--text-main);
+            color: #fff;
+            font-weight: 600;
+        }
+        .breadcrumb {
+            text-align: right;
+            padding: 16px 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            background: #fff;
+        }
+
+        .course-content {
+            padding: 60px 24px 140px;
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 70vh;
+        }
+        
+        .course-guide-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+        .course-divider {
+            width: 100%; height: 1px; background: var(--border-color); margin-bottom: 40px;
+        }
+        .course-subtitle {
+            font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-main);
+        }
+        .course-desc {
+            font-size: 15px; color: var(--text-muted); margin-bottom: 60px;
+        }
+
+        /* Diagram Design - Apple Motif */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+        .diagram-top-pill {
+            background: var(--text-main); 
+            color: #fff; 
+            border-radius: 980px; 
+            padding: 16px 60px; 
+            font-size: 20px; 
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+        .diagram-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .side-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .side-box {
+            border: 2px solid var(--text-main);
+            border-radius: 12px;
+            padding: 18px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--bg-white);
+            color: var(--text-main);
+            width: 180px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        /* Large Triangle Arrows */
+        .arrow-right { 
+            width: 0; height: 0; 
+            border-top: 80px solid transparent; 
+            border-bottom: 80px solid transparent; 
+            border-left: 24px solid var(--text-main); 
+        }
+        .arrow-left { 
+            width: 0; height: 0; 
+            border-top: 80px solid transparent; 
+            border-bottom: 80px solid transparent; 
+            border-right: 24px solid var(--text-main); 
+        }
+
+        .center-circles {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 480px;
+            height: 220px;
+        }
+        .circle {
+            width: 190px; height: 190px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: absolute;
+            font-size: 20px; font-weight: 700;
+            text-align: center;
+        }
+        .circle.left { 
+            left: 0; background: #e5e5ea; color: var(--text-main); z-index: 1; border: 1px solid var(--border-color);
+        }
+        .circle.right { 
+            right: 0; background: #e5e5ea; color: var(--text-main); z-index: 1; border: 1px solid var(--border-color);
+        }
+        .circle.middle { 
+            background: var(--text-main); color: #fff; z-index: 2; flex-direction: column; gap: 8px;
+            width: 220px; height: 220px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .circle.middle span { 
+            font-size: 13px; font-weight: 400; padding: 4px 16px; 
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 980px; 
+        }
+
+        /* Signup / Apply Form Styles */
+        .apply-form-container {
+            max-width: 600px; margin: 0 auto;
+            text-align: left;
+        }
+        .apply-form .form-group {
+            margin-bottom: 24px;
+        }
+        .apply-form label {
+            display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;
+        }
+        .apply-form input, .apply-form select {
+            width: 100%; padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; outline: none; background: #f5f5f7;
+        }
+        .apply-form input:focus, .apply-form select:focus {
+            border-color: var(--text-main); background: #fff;
+        }
+        .apply-btn {
+            width: 100%; padding: 16px; background: var(--text-main); color: #fff; border: none; border-radius: 980px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .apply-btn:hover { background: #424245; }
+
+    </style>
+</head>
+<body style="background: #fff;">
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-dmu">DMU</span><span class="logo-text">반도체부트캠프</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="about.html">사업단 소개</a></li>
+                    <li><a href="course.html">교육과정안내/신청</a></li>
+                    <li><a href="facility.html">교육시설장비</a></li>
+                    <li><a href="community.html">커뮤니티</a></li>
+                    <li><a href="recruit.html">채용정보</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user-circle"></i> 로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-tabs">
+            <div class="login-tab active" id="tabGuide">교육과정안내</div>
+            <div class="login-tab" id="tabApply">교육과정신청</div>
+        </div>
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> &gt; 교육과정안내/신청 &gt; <span id="breadCurrent">교육과정안내</span>
+        </div>
+        
+        <section class="course-content">
+            <!-- 교육과정안내 영역 -->
+            <div id="guideSection">
+                <div class="course-guide-title">교육과정안내</div>
+                <div class="course-divider"></div>
+                
+                <div style="text-align: left; max-width: 1000px; margin: 0 auto;">
+                    <div class="course-subtitle">부트캠프 교육과정 프로그램</div>
+                    <div class="course-desc">- 부트캠프 교육과정 프로그램은 크게 마이크로디그리, 몰입형, 기타 교육과정으로 이루어짐</div>
+                </div>
+
+                <div class="diagram-container">
+                    <div class="diagram-top-pill">마이크로디그리와 몰입형 교육과정 구성</div>
+                    <div class="diagram-body">
+                        <div class="side-col">
+                            <div class="side-box">반도체 설비<br>제어 교과</div>
+                            <div class="side-box">반도체 설비<br>유지보수 교과</div>
+                            <div class="side-box">정규 학기<br>교과 편성</div>
+                        </div>
+                        <div class="arrow-right"></div>
+                        
+                        <div class="center-circles">
+                            <div class="circle left">교과형</div>
+                            <div class="circle right">몰입형</div>
+                            <div class="circle middle">
+                                마이크로디그리<br>과정
+                                <span>교과형 + 몰입형</span>
+                            </div>
+                        </div>
+
+                        <div class="arrow-left"></div>
+                        <div class="side-col">
+                            <div class="side-box">단기 현장 실무<br>집중 교육</div>
+                            <div class="side-box">자격증<br>연계 특강</div>
+                            <div class="side-box">사업체<br>인사 참여</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 교육과정신청 영역 -->
+            <div id="applySection" style="display: none;">
+                <div class="course-guide-title">교육과정신청</div>
+                <div class="course-divider"></div>
+
+                <div class="apply-form-container">
+                    <form class="apply-form" onsubmit="event.preventDefault(); alert('교육과정 신청이 정상적으로 접수되었습니다!');">
+                        <div class="form-group">
+                            <label>신청할 교육과정 선택</label>
+                            <select required>
+                                <option value="">과정을 선택해주세요</option>
+                                <option>마이크로디그리 과정 (교과형+몰입형)</option>
+                                <option>몰입형 단기 현장 집중 교육</option>
+                                <option>기타 자격증 연계 특강</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>신청자 성명</label>
+                            <input type="text" placeholder="이름을 입력하세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label>연락처</label>
+                            <input type="tel" placeholder="010-0000-0000" pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" required>
+                        </div>
+                        <button type="submit" class="apply-btn">수강 신청 지원하기</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">DMU 반도체부트캠프</div>
+            <div class="footer-info">
+                <p>서울특별시 구로구 경인로 445 동양미래대학교</p>
+                <p>Copyright &copy; 2026 DONGYANG MIRAE UNIVERSITY. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabGuide = document.getElementById('tabGuide');
+            const tabApply = document.getElementById('tabApply');
+            const guideSection = document.getElementById('guideSection');
+            const applySection = document.getElementById('applySection');
+            const breadCurrent = document.getElementById('breadCurrent');
+
+            tabGuide.addEventListener('click', () => {
+                tabGuide.classList.add('active');
+                tabApply.classList.remove('active');
+                guideSection.style.display = 'block';
+                applySection.style.display = 'none';
+                breadCurrent.innerText = '교육과정안내';
+            });
+
+            tabApply.addEventListener('click', () => {
+                tabApply.classList.add('active');
+                tabGuide.classList.remove('active');
+                applySection.style.display = 'block';
+                guideSection.style.display = 'none';
+                breadCurrent.innerText = '교육과정신청';
+            });
+        });
+    </script>
+</body>
+</html>

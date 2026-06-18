@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채용정보 - DMU 반도체부트캠프</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .subpage-header { padding: 100px 0; text-align: center; background: #f5f5f7; border-bottom: 1px solid var(--border-color); }
+        .subpage-header h1 { font-size: 40px; margin-bottom: 20px; color: var(--text-main); letter-spacing: -1px; font-weight: 800; }
+        .subpage-content { min-height: 50vh; padding: 40px 0 100px; background: #fff; text-align: center; }
+
+        /* Search Bar Area */
+        .search-area {
+            background-color: #f8f8fa;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 30px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .search-select {
+            padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 0; outline: none; background: #fff; font-size: 14px;
+        }
+        .search-input {
+            width: 400px; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 0; outline: none; background: #fff; font-size: 14px;
+        }
+        .search-btn {
+            background: #555555; color: #fff; border: none; padding: 13px 30px; cursor: pointer; font-weight: 600; font-size: 14px;
+        }
+        .search-btn:hover { background: #333; }
+
+        /* Board Table Layout */
+        .board-container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+        .board-header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; }
+        .btn-write-job { background: var(--text-main); color: #fff; border: none; padding: 10px 24px; border-radius: 980px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .btn-write-job:hover { background: #424245; }
+
+        .board-table { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 50px;}
+        .board-table th { background: #fff; font-weight: 600; color: var(--text-main); padding: 16px; border-bottom: 1px solid var(--border-color); border-top: 2px solid var(--text-main); font-size: 15px;}
+        .board-table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; color: var(--text-main); }
+        .board-table tr:hover td { background: #fbfbfb; cursor: pointer; }
+        .title-col { text-align: left !important; font-weight: 600; }
+        .title-col:hover .title-text { text-decoration: underline; }
+
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; gap: 4px; margin-bottom: 40px; }
+        .page-btn { padding: 10px 16px; border: 1px solid var(--border-color); background: #fff; color: var(--text-muted); cursor: pointer; font-size: 13px; }
+        .page-btn.active { background: #555555; color: #fff; border-color: #555555; font-weight: 600; }
+        .page-btn:hover:not(.active) { background: #f5f5f7; }
+
+        /* Modals recycled from community.html */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal { background: #fff; width: 600px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); max-width: 90%; text-align: left; }
+        .view-modal { width: 700px; max-height: 90vh; overflow-y: auto; padding: 40px 30px; }
+        .modal-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--text-main); border-bottom: 2px solid var(--text-main); padding-bottom: 16px; }
+        
+        .modal-input { width: 100%; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; outline: none; font-size: 15px; background: #f5f5f7; }
+        .modal-textarea { width: 100%; padding: 16px; height: 200px; border: 1px solid var(--border-color); border-radius: 12px; resize: none; margin-bottom: 24px; outline: none; font-size: 15px; background: #f5f5f7; font-family: inherit; }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .btn-cancel { background: #e5e5ea; color: var(--text-main); border: none; padding: 14px 24px; border-radius: 980px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-submit { background: var(--text-main); color: #fff; border: none; padding: 14px 32px; border-radius: 980px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+
+        .view-meta { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; display: flex; gap: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;}
+        .view-content { min-height: 120px; white-space: pre-wrap; font-size: 16px; line-height: 1.8; margin-bottom: 30px; padding: 0 8px; color: var(--text-main); }
+        
+        /* Like and Comments */
+        .btn-like-job { background: #fff; color: var(--text-main); border: 2px solid var(--border-color); padding: 12px 30px; border-radius: 980px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .btn-like-job:hover { border-color: var(--text-main); background: #f5f5f7; }
+
+        .comments-section { background: #fbfbfb; border-radius: 16px; padding: 24px; border: 1px solid var(--border-color); text-align: left; }
+        .comments-count { font-weight: 700; margin-bottom: 16px; font-size: 15px; }
+
+        .comment-input-area { display: flex; gap: 10px; margin-bottom: 24px; }
+        .comment-input { flex: 1; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-size: 14px; }
+        .btn-comment-submit { background: var(--text-main); color: #fff; padding: 0 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+
+        .comment-item { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e5e5ea; }
+        .comment-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .comment-author { font-weight: 700; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;}
+        .comment-text { font-size: 14px; color: var(--text-main); margin-bottom: 8px; line-height: 1.5; }
+        .comment-date { font-size: 12px; color: var(--text-muted); }
+        
+        .best-badge { background: #000; color: white; padding: 3px 8px; border-radius: 980px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+        .btn-like-comment { background: none; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; transition: 0.3s; font-weight: 600; height: fit-content; }
+        .btn-like-comment:hover { color: var(--text-main); border-color: var(--text-main); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-dmu">DMU</span><span class="logo-text">반도체부트캠프</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="about.html">사업단 소개</a></li>
+                    <li><a href="course.html">교육과정안내/신청</a></li>
+                    <li><a href="facility.html">교육시설장비</a></li>
+                    <li><a href="community.html">커뮤니티</a></li>
+                    <li><a href="recruit.html">채용정보</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user-circle"></i> 로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="subpage-header" style="background:#fff; border-bottom:none; padding-bottom: 40px;">
+            <div class="container">
+                <h1 style="font-size:48px;">채용정보</h1>
+            </div>
+        </section>
+
+        <!-- Search Bar Area as requested by User image -->
+        <div class="search-area">
+            <select class="search-select" id="searchType">
+                <option value="title">채용제목</option>
+                <option value="company">기업명</option>
+            </select>
+            <input type="text" class="search-input" id="searchQuery" placeholder="">
+            <button class="search-btn" id="btnSearch">검색</button>
+        </div>
+        
+        <section class="subpage-content">
+            <div class="board-container">
+                <div class="board-header">
+                    <button class="btn-write-job" id="btnWriteJob"><i class="fas fa-pen"></i> 채용공고 등록</button>
+                </div>
+                
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">번호</th>
+                            <th class="title-col" style="width: 44%;">채용제목</th>
+                            <th style="width: 16%;">기업명</th>
+                            <th style="width: 8%;">조회</th>
+                            <th style="width: 8%;">관심</th>
+                            <th style="width: 16%;">등록일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobTbody">
+                        <!-- Javascript will populate jobs here -->
+                    </tbody>
+                </table>
+
+                <!-- Pagination Area as requested by User image -->
+                <div class="pagination">
+                    <button class="page-btn">처음</button>
+                    <button class="page-btn">이전</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">다음</button>
+                    <button class="page-btn">맨끝</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Write Job Modal -->
+    <div class="modal-overlay" id="modalWrite">
+        <div class="modal">
+            <div class="modal-title">채용공고 등록하기</div>
+            <form id="formWrite">
+                <input type="text" class="modal-input" id="writeCompany" placeholder="기업명을 입력하세요." required>
+                <input type="text" class="modal-input" id="writeTitle" placeholder="채용제목 (예: 2026년 반도체 공정 엔지니어 신입 채용)" required>
+                <textarea class="modal-textarea" id="writeContent" placeholder="채용 상세 내용 (지원자격, 근무조건, 모집인원 등)" required></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCancelWrite">취소</button>
+                    <button type="submit" class="btn-submit">공고 등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Job Modal -->
+    <div class="modal-overlay" id="modalView">
+        <div class="modal view-modal">
+            <div class="modal-title" id="viewTitle">채용제목 영역</div>
+            <div class="view-meta" id="viewMeta">
+                <!-- Javascript will inject Company, Date, Views -->
+            </div>
+            <div class="view-content" id="viewContent">채용 상세 내용 영역</div>
+            
+            <div style="text-align: center; margin-bottom: 40px;">
+                <button class="btn-like-job" id="btnLikeJob"><i class="fas fa-heart"></i> 관심공고 담기 <span id="jobLikeCount">0</span></button>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <div class="comments-count">응원 & 질문 <span id="commentsCountTxt">0</span>개</div>
+                <div class="comment-input-area">
+                    <input type="text" id="commentText" placeholder="응원 메시지나 채용담당자에게 질문을 남겨보세요..." class="comment-input">
+                    <button class="btn-comment-submit" id="btnSubmitComment">등록</button>
+                </div>
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments injected by JS -->
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button type="button" class="btn-cancel" id="btnCloseView">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">DMU 반도체부트캠프</div>
+            <div class="footer-info">
+                <p>서울특별시 구로구 경인로 445 동양미래대학교</p>
+                <p>Copyright &copy; 2026 DONGYANG MIRAE UNIVERSITY. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const jobTbody = document.getElementById('jobTbody');
+            const modalWrite = document.getElementById('modalWrite');
+            const modalView = document.getElementById('modalView');
+            const btnWriteJob = document.getElementById('btnWriteJob');
+            const searchInput = document.getElementById('searchQuery');
+            const searchBtn = document.getElementById('btnSearch');
+            const searchType = document.getElementById('searchType');
+            
+            // Database Initialization
+            let jobs = JSON.parse(localStorage.getItem('dmu_jobs')) || [];
+            jobs = jobs.map(j => ({
+                ...j,
+                id: j.id || Math.random().toString(36).substr(2, 9),
+                views: j.views || 0,
+                likes: j.likes || 0,
+                comments: j.comments || []
+            }));
+            saveJobs();
+
+            let currentJobId = null;
+
+            function saveJobs() {
+                localStorage.setItem('dmu_jobs', JSON.stringify(jobs));
+            }
+
+            function getJob(id) {
+                return jobs.find(j => j.id === id);
+            }
+
+            // Render Entire Board with Optional Search Support
+            function renderBoard(filterQuery = "") {
+                jobTbody.innerHTML = '';
+                
+                let filteredJobs = [...jobs];
+                if(filterQuery) {
+                    const q = filterQuery.toLowerCase();
+                    const type = searchType.value;
+                    if(type === 'title') {
+                        filteredJobs = filteredJobs.filter(j => j.title.toLowerCase().includes(q));
+                    } else if(type === 'company') {
+                        filteredJobs = filteredJobs.filter(j => j.company.toLowerCase().includes(q));
+                    }
+                }
+
+                if(filteredJobs.length === 0) {
+                    jobTbody.innerHTML = '<tr><td colspan="6" style="padding: 60px; color: #86868b; text-align: center;">등록된 채용공고가 없습니다. 첫 번째 공고를 등록해보세요!</td></tr>';
+                    return;
+                }
+                
+                const reversed = filteredJobs.reverse();
+                reversed.forEach((job, index) => {
+                    const tr = document.createElement('tr');
+                    const commentIndicator = job.comments.length > 0 ? `<span style="color:#007aff; font-weight:700; margin-left:8px; font-size:13px;">[${job.comments.length}]</span>` : '';
+                    
+                    tr.innerHTML = `
+                        <td>${filteredJobs.length - index}</td>
+                        <td class="title-col"><span class="title-text" style="color:#1d1d1f; font-size:15px;">${job.title}</span>${commentIndicator}</td>
+                        <td style="font-weight:600; color:#555;">${job.company}</td>
+                        <td>${job.views}</td>
+                        <td><span style="color:var(--text-main); font-weight:600;"><i class="far fa-heart"></i> ${job.likes}</span></td>
+                        <td>${job.date}</td>
+                    `;
+                    
+                    tr.addEventListener('click', () => {
+                        job.views += 1;
+                        saveJobs();
+                        renderBoard(searchInput.value);
+
+                        currentJobId = job.id;
+                        renderModalView(job);
+                        modalView.style.display = 'flex';
+                    });
+                    jobTbody.appendChild(tr);
+                });
+            }
+
+            // Render View Modal
+            function renderModalView(job) {
+                document.getElementById('viewTitle').innerText = job.title;
+                document.getElementById('viewMeta').innerHTML = `
+                    <span><i class="fas fa-building"></i> ${job.company}</span>
+                    <span><i class="fas fa-calendar"></i> ${job.date}</span>
+                    <span><i class="fas fa-eye"></i> ${job.views}</span>
+                `;
+                document.getElementById('viewContent').innerText = job.content;
+                document.getElementById('jobLikeCount').innerText = job.likes;
+                renderComments(job);
+            }
+
+            // Render Comments
+            function renderComments(job) {
+                const list = document.getElementById('commentsList');
+                document.getElementById('commentsCountTxt').innerText = job.comments.length;
+                list.innerHTML = '';
+                
+                let highestLikes = 0;
+                job.comments.forEach(c => { if(c.likes > highestLikes) highestLikes = c.likes; });
+
+                job.comments.forEach(c => {
+                    const isBest = c.likes > 0 && c.likes === highestLikes;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'comment-item';
+                    
+                    const leftDiv = document.createElement('div');
+                    leftDiv.innerHTML = `
+                        <div class="comment-author">
+                            ${c.author}
+                            ${isBest ? '<span class="best-badge"><i class="fas fa-fire"></i> BEST 질문</span>' : ''}
+                        </div>
+                        <div class="comment-text">${c.text}</div>
+                        <div class="comment-date">${c.date}</div>
+                    `;
+                    
+                    const rightDiv = document.createElement('div');
+                    const btnLike = document.createElement('button');
+                    btnLike.className = 'btn-like-comment';
+                    btnLike.innerHTML = `<i class="fas fa-thumbs-up"></i> 추천 ${c.likes}`;
+                    
+                    btnLike.addEventListener('click', () => {
+                        c.likes += 1;
+                        saveJobs();
+                        renderComments(job);
+                    });
+
+                    rightDiv.appendChild(btnLike);
+                    div.appendChild(leftDiv);
+                    div.appendChild(rightDiv);
+                    list.appendChild(div);
+                });
+            }
+
+            // Search
+            searchBtn.addEventListener('click', () => {
+                renderBoard(searchInput.value);
+            });
+            searchInput.addEventListener('keyup', (e) => {
+                if(e.key === 'Enter') renderBoard(searchInput.value);
+            });
+
+            // Job Like
+            document.getElementById('btnLikeJob').addEventListener('click', () => {
+                if(!currentJobId) return;
+                const j = getJob(currentJobId);
+                if(j) {
+                    j.likes += 1;
+                    saveJobs();
+                    document.getElementById('jobLikeCount').innerText = j.likes;
+                    renderBoard(searchInput.value);
+                }
+            });
+
+            // Submit Comment
+            document.getElementById('btnSubmitComment').addEventListener('click', () => {
+                if(!currentJobId) return;
+                const author = localStorage.getItem('dmu_user');
+                if(!author) {
+                    alert('로그인 후 참여할 수 있습니다.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const input = document.getElementById('commentText');
+                const text = input.value.trim();
+                if(!text) return;
+                
+                const j = getJob(currentJobId);
+                if(j) {
+                    const today = new Date();
+                    const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0') + " " + String(today.getHours()).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0');
+                    
+                    j.comments.push({
+                        id: Math.random().toString(36).substr(2, 9),
+                        author: author,
+                        text: text,
+                        date: dateStr,
+                        likes: 0
+                    });
+                    saveJobs();
+                    input.value = '';
+                    renderComments(j);
+                    renderBoard(searchInput.value); // refresh count
+                }
+            });
+
+            // Write Button
+            btnWriteJob.addEventListener('click', () => {
+                const currentUser = localStorage.getItem('dmu_user');
+                if(!currentUser) {
+                    alert('로그인 후 공고를 등록할 수 있습니다.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                modalWrite.style.display = 'flex';
+            });
+
+            // Submit Write Form
+            document.getElementById('formWrite').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const company = document.getElementById('writeCompany').value;
+                const title = document.getElementById('writeTitle').value;
+                const content = document.getElementById('writeContent').value;
+                const today = new Date();
+                const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+                jobs.push({ id: Math.random().toString(36).substr(2, 9), company, title, content, date: dateStr, views: 0, likes: 0, comments: [] });
+                saveJobs();
+                
+                document.getElementById('writeCompany').value = '';
+                document.getElementById('writeTitle').value = '';
+                document.getElementById('writeContent').value = '';
+                modalWrite.style.display = 'none';
+                
+                // Reset search to view new job
+                searchInput.value = '';
+                renderBoard('');
+            });
+
+            // Modals Close
+            document.getElementById('btnCancelWrite').addEventListener('click', () => modalWrite.style.display = 'none');
+            document.getElementById('btnCloseView').addEventListener('click', () => modalView.style.display = 'none');
+
+            // Render
+            renderBoard('');
+        });
+    </script>
+</body>
+</html>
